@@ -54,16 +54,26 @@ std::string Adventure::extendPath(const std::string& path, int choiceNumber) con
 
 // ===================== LOADING =====================
 
-// TODO 10: open the story file and build the tree.
-//   - If the file will not open, print exactly:
-//       Error: could not open file <fileName>
-//     and return false.
-//   - Read the START_HP line and save the number in startHp_.
-//     (std::stoi turns "10" into 10.)
-//   - Build the whole story with readScene. The first scene's label is "START".
-//   - If anything failed, return false. Otherwise give the story to tree_.
 bool Adventure::load(const std::string& fileName) {
-    return false;
+    std::ifstream in(fileName);
+    if (!in.is_open()) {
+        std::cout << "Error: could not open file " << fileName << std::endl;
+        return false;
+    }
+
+    std::string value;
+    if (!readField(in, "START_HP", value)) {
+        return false;
+    }
+    startHp_ = std::stoi(value);
+
+    Scene<Moment>* root = readScene(in, "START");
+    if (root == nullptr) {
+        return false;
+    }
+
+    tree_.setRoot(root);
+    return true;
 }
 
 // TODO 11: read ONE scene and everything below it. Return it.
@@ -75,7 +85,39 @@ bool Adventure::load(const std::string& fileName) {
 //   - If anything goes wrong at any depth, return nullptr
 //     and make sure nothing you already built is leaked.
 Scene<Moment>* Adventure::readScene(std::ifstream& in, const std::string& label) {
-    return nullptr;
+    std::string text, hpStr, lootStr, item, choicesStr;
+    if (!readField(in, "SCENE", text))  return nullptr;
+    if (!readField(in, "HP", hpStr)) return nullptr;
+    if (!readField(in, "LOOT", lootStr)) return nullptr;
+    if (!readField(in, "ITEM", item)) return nullptr;
+    if (!readField(in, "CHOICE", choicesStr)) return nullptr;
+
+    int numChoices = std::stoi(choicesStr);
+    if (numChoices < 0 || numChoices > Scene<Moment>::MAX_CHOICES) {
+        std::cout << "Error: scene \"" << text << "\" has " << numChoices
+                  << " choices. The limit is 3." << std::endl;
+        return nullptr;                 // nothing allocated yet, so nothing leaks
+    }
+
+    Moment* moment = new Moment(text, label, std::stoi(hpStr), std::stoi(lootStr), item);
+    Scene<Moment>* scene = new Scene<Moment>(moment, numChoices);
+
+
+    for (int i = 0; i < numChoices; i++) {
+        std::string childLabel;
+        if (!readField(in, "LABEL", childLabel)) {
+            delete scene;
+            return nullptr;
+        }
+        Scene<Moment>* child = readScene(in, childLabel);   // the recursion
+        if (child == nullptr) {
+            delete scene;
+            return nullptr;
+        }
+        scene->setChoice(i, child);
+    }
+    return scene;
+
 }
 
 // ===================== PLAYING =====================
