@@ -246,7 +246,7 @@ void Adventure::printEndings(Scene<Moment>* scene, const std::string& path) cons
     }
 }
 
-// TODO 17: the greedy advisor.
+
 // Start at the first scene with startHp_ and 0 loot.
 // Enter scenes the same way play does (add HP and loot).
 // Stop when hp is 0 or less, or you reach an ending.
@@ -258,18 +258,78 @@ void Adventure::printEndings(Scene<Moment>* scene, const std::string& path) cons
 //     Loot: <loot>
 //     Result: died               (or "Result: reached an ending")
 void Adventure::greedyRun() const {
+    Scene<Moment>* scene = tree_.getRoot();
+    if (scene == nullptr) {
+        return;
+    }
+    int hp = startHp_;
+    int loot = 0;
+    std::string path = "";
+
+
+    hp += scene->getData()->getHpChange();
+    loot += scene->getData()->getLoot();
+
+    while (hp > 0 && !scene->isEnding()) {
+
+        int bestIndex = 0;
+        for (int i = 1; i < scene->getNumChoices(); i++) {
+            if (scene->getChoice(i)->getData()->getLoot() >
+                scene->getChoice(bestIndex)->getData()->getLoot()) {
+                bestIndex = i;
+                }
+        }
+
+        scene = scene->getChoice(bestIndex);
+        path = extendPath(path, bestIndex + 1);
+        hp += scene->getData()->getHpChange();
+        loot += scene->getData()->getLoot();
+    }
+
+    std::cout << "Greedy advisor" << std::endl;
+    std::cout << "  Path: " << path << std::endl;
+    std::cout << "  Loot: " << loot << std::endl;
+    if (hp <= 0) {
+        std::cout << "  Result: died" << std::endl;
+    } else {
+        std::cout << "  Result: reached an ending" << std::endl;
+    }
 }
 
-// TODO 18: the best total loot you can collect from scene down to an ending,
-// arriving at scene with hp health and having taken path to get here.
-//   - Return -1 if every way down from here kills you.
-//   - Put the path of the best run into bestPath.
-//   - Must be recursive and look at every choice.
+
 int Adventure::bestLoot(Scene<Moment>* scene, int hp, const std::string& path, std::string& bestPath) const {
-    return -1;
+    if (scene == nullptr) {
+        return -1;
+    }
+
+    hp += scene->getData()->getHpChange();
+    if (hp <= 0) {
+        return -1;
+    }
+    int here = scene->getData()->getLoot();
+
+    if (scene->isEnding()) {
+        bestPath = path;
+        return here;
+    }
+
+    int best = -1;
+    for (int i = 0; i < scene->getNumChoices(); i++) {
+        std::string childPath;
+        int result = bestLoot(scene->getChoice(i), hp, extendPath(path, i + 1), childPath);
+        if (result > best) {
+            best = result;
+            bestPath = childPath;
+        }
+    }
+
+    if (best == -1) {
+        return -1;
+    }
+    return here + best;
 }
 
-// TODO 19: the optimal advisor. Use bestLoot from the first scene.
+
 // Print:
 //   Optimal advisor
 //     Path: <path>
@@ -279,4 +339,15 @@ int Adventure::bestLoot(Scene<Moment>* scene, int hp, const std::string& path, s
 //   Optimal advisor
 //     Result: no path survives this story
 void Adventure::optimalRun() const {
+    std::string bestPath;
+    int loot = bestLoot(tree_.getRoot(), startHp_, "", bestPath);
+
+    std::cout << "Optimal advisor" << std::endl;
+    if (loot == -1) {
+        std::cout << "  Result: no path survives this story" << std::endl;
+        return;
+    }
+    std::cout << "  Path: " << bestPath << std::endl;
+    std::cout << "  Loot: " << loot << std::endl;
+    std::cout << "  Result: reached an ending" << std::endl;
 }
