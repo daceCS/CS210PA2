@@ -1,6 +1,96 @@
 START_HP 10
-SCENE Replace this file with your own story.
+SCENE You are Wyatt Callahan, fifteen years old and the fastest rider in Dry Gulch. Marshal Hattie Boone, laid up with a busted leg, pins her spare badge on your shirt and sends you after Silas "Rattler" Crane, the outlaw who has robbed three towns this month.
 HP 0
 LOOT 0
 ITEM none
-CHOICES 0
+CHOICES 3
+LABEL Ride into town and ask around the Lucky Spur Saloon
+  SCENE The Lucky Spur is loud, smoky and full of men who do not want to talk to a kid with a badge. The bartender slides you a sarsaparilla and a silver dollar, and whispers that Crane's gang drinks here on Fridays.
+  HP 0
+  LOOT 2
+  ITEM none
+  CHOICES 2
+  LABEL Wait at the bar until Friday
+    SCENE You wait at the bar for three long days. Crane never shows, and the Marshal sends you home with a few dollars for your trouble.
+    HP 0
+    LOOT 3
+    ITEM none
+    CHOICES 0
+  LABEL Slip into the back room where the card game is
+    SCENE A drunk deputy loses his last poker hand, shoves you into the wall on his way out, and leaves his coil of rope on the table.
+    HP -1
+    LOOT 1
+    ITEM Coil of Rope
+    CHOICES 1
+    LABEL Follow the deputy out the back door
+      SCENE The deputy stumbles straight to Crane's cousin, who is counting stolen money behind the livery. You hogtie him with the rope and haul him to the Marshal. It is not Crane, but it is a start.
+      HP 0
+      LOOT 2
+      ITEM none
+      CHOICES 0
+LABEL Head for the Dry Gulch bank, where gunshots just rang out
+  SCENE You arrive as Crane's gang bursts out of the bank with their guns blazing. A bullet grazes your arm, and in the chaos you snatch a six-shooter and a few gold coins one of them dropped on the boardwalk.
+  HP -2
+  LOOT 4
+  ITEM Six-Shooter
+  CHOICES 2
+  LABEL Run into the bank and grab the spilled gold
+    SCENE The vault floor glitters with spilled gold bars. You stuff your pockets full, but Crane left a man behind the counter, and he puts a bullet in your leg.
+    HP -5
+    LOOT 7
+    ITEM none
+    CHOICES 1
+    LABEL Limp out the door with your pockets full
+      SCENE Weighed down by gold and a bad leg, you cannot run. Crane's gang circles back for the rest of the money, and the last thing you hear is Rattler laughing.
+      HP -4
+      LOOT 1
+      ITEM none
+      CHOICES 0
+  LABEL Mount up and track the gang from a distance
+    SCENE You let the gang ride off, saddle up your horse Biscuit, and follow their dust trail from far enough back that they cannot see you. Coins that fell from their saddlebags glint in the dirt along the way.
+    HP 0
+    LOOT 2
+    ITEM none
+    CHOICES 2
+    LABEL Ride back and get help from the Marshal
+      SCENE You tell the Marshal which way the gang went. Her posse catches them a week later, and she splits the reward with you.
+      HP 0
+      LOOT 3
+      ITEM none
+      CHOICES 0
+    LABEL Keep following the trail into Red Rock Canyon
+      SCENE The gang spots you and splits up in the canyon. You chase Crane's right-hand man through the rocks until his horse throws him, and you take a brass spyglass and his share of the loot from his saddlebag.
+      HP -1
+      LOOT 3
+      ITEM Brass Spyglass
+      CHOICES 1
+      LABEL Use the spyglass to find the hideout
+        SCENE Through the spyglass you spot smoke rising from an old silver mine. You sneak inside, wrestle a guard to the ground, and find crates of stolen bank notes stacked against the wall.
+        HP -2
+        LOOT 4
+        ITEM none
+        CHOICES 1
+        LABEL Call Rattler Crane out into the open
+          SCENE Crane steps out of the mine squinting into the sun and reaches for his gun, but you are faster and shoot the pistol right out of his hand. You ride back into Dry Gulch with Crane tied to his own horse and the stolen gold behind you, and the Marshal tells you to keep the badge.
+          HP 0
+          LOOT 6
+          ITEM none
+          CHOICES 0
+LABEL Follow the hoofprints of a stolen horse out of town
+  SCENE The hoofprints lead to a traveling card sharp named Velvet Lou, who stole the preacher's horse. Lou grins and offers to bet the horse on one hand of poker.
+  HP 0
+  LOOT 1
+  ITEM none
+  CHOICES 1
+  LABEL Sit down and play the hand
+    SCENE You win the hand with a pair of aces. Lou tips his hat, hands over the reins, and shares his pot of beans and coffee before you ride.
+    HP 1
+    LOOT 2
+    ITEM none
+    CHOICES 1
+    LABEL Ride the preacher's horse back to town
+      SCENE The preacher thanks you with a reward, but the whole town is talking. Crane robbed the bank while you were playing cards, and the Marshal is not happy with you.
+      HP 0
+      LOOT 3
+      ITEM none
+      CHOICES 0
