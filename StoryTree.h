@@ -23,16 +23,32 @@ private:
         return total;
     }
 
-    // TODO 7: how many endings are in the story that starts at scene?
     int countEndings(Scene<T>* scene) const {
-        return 0;
+        if (scene == nullptr) {
+            return 0;
+        }
+        if (scene->isEnding()) {
+            return 1;
+        }
+        int total = 0;
+        for (int i = 0; i<scene->getNumChoices(); i++) {
+            total += countEndings(scene->getChoice(i));
+        }
+        return total;
     }
 
-    // TODO 8: the most choices a player can make on the way to an ending,
-    // starting at scene. A single ending scene has height 0.
-    // An empty story has height -1.
     int height(Scene<T>* scene) const {
-        return -1;
+        if (scene == nullptr) {
+            return -1;
+        }
+        int best = -1;
+        for (int i = 0; i<scene->getNumChoices(); i++) {
+            int h = height(scene->getChoice(i));
+            if (h > best) {
+                best = h;
+            }
+        }
+        return best+1;
     }
 
 public:
@@ -55,9 +71,9 @@ public:
         return root_ == nullptr;
     }
 
-    // TODO 9: free every scene in the story and leave the tree empty.
-    // Hint: what does deleting a Scene already do for you?
     void clear() {
+        delete root_;
+        root_ = nullptr;
     }
 
     int countScenes() const {
